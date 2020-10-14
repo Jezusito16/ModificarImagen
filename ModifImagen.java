@@ -72,23 +72,50 @@ public class ModifImagen{
         return out;
     }
 
-    public static void main(String[] args) throws IOException {
-        BufferedImage img = ImageIO.read(new File(args[0]));
+    public static BufferedImage addRGB(BufferedImage img, int add) {
+        Color matrix[][];
 
-        boolean isInteger = false;
-        try {
-            Integer.parseInt(args[1]);
-            isInteger = true;
-        } catch (Exception e) {}
-        if(isInteger){
-            int addr = Integer.parseInt(args[1]);
-            int addg = Integer.parseInt(args[2]);
-            int addb = Integer.parseInt(args[3]);
-            img = RGBadd(img,addr,addg,addb);
+        int w = img.getWidth();
+        int h = img.getHeight();
+
+        BufferedImage out = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        matrix = new Color[h][w];
+
+        for (int i = 0; i < h; ++i){
+            for (int j = 0; j < w; ++j) {
+                int rgb = img.getRGB(j, i);
+
+                rgb += add;
+
+                matrix[i][j] = new Color(rgb);
+            }
         }
-        else
-            img = binarizado(img);
+
+        for (int i = 0; i < h; ++i)
+            for (int j = 0; j < w; ++j)
+                out.setRGB(j, i, matrix[i][j].getRGB());
+
+        return out;
+    }
+
+    public static void main(String[] args) {
+        try {
+            BufferedImage img = ImageIO.read(new File(args[1]));
+            int op = Integer.parseInt(args[0]);
+            if (op == 0) {
+                img = binarizado(img);
+            } else if (op == 1) {
+                img = RGBadd(img, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+            } else if (op == 2) {
+                img = addRGB(img, Integer.parseInt(args[2]));
+            } else
+                System.out.println("Opción no implementada");
+
+            ImageIO.write(img, "jpg", new File("out.jpg"));
+        } catch (IOException e) {
+            System.out.println("No existe la imagen");
+        }
         
-        ImageIO.write(img, "jpg", new File("out.jpg"));
+        
     }
 }
