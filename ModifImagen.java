@@ -114,8 +114,6 @@ public class ModifImagen{
             ImageIO.write(img, "jpg", new File("out.jpg"));
         } catch (IOException e) {
             System.out.println("No existe la imagen");
-        }
-        
-        
+        }       
     }
 }
